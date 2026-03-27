@@ -93,6 +93,28 @@ Open `http://localhost:3001` — all your existing sessions are discovered autom
 
 Visit the **[documentation →](https://cloudcli.ai/docs)** for more full configuration options, PM2, remote server setup and more
 
+### ⚠️ Starting from inside a Claude Code terminal
+
+If you launch the server from within a Claude Code session (e.g. via `!` commands or a sub-shell), the process inherits `CLAUDECODE=1`. The SDK internally spawns a claude subprocess, and claude refuses to run when it detects this variable (nested-session guard), causing chat to hang silently with no response.
+
+**Always start the server with `CLAUDECODE` unset:**
+
+```bash
+# Wrong — inherits CLAUDECODE=1 from parent Claude Code session
+node server/index.js
+
+# Correct
+env -u CLAUDECODE node server/index.js
+
+# With nohup
+env -u CLAUDECODE nohup node server/index.js > /tmp/claudeui.log 2>&1 &
+
+# With tmux
+tmux new-session -d -s claudeui "env -u CLAUDECODE node server/index.js"
+```
+
+Symptom: the UI connects, messages are received by the server (visible in logs), but no response ever comes back and the client keeps reconnecting.
+
 
 ---
 
