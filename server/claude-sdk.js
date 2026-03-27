@@ -162,7 +162,7 @@ function mapCliOptionsToSDK(options = {}) {
   const settings = toolsSettings || {
     allowedTools: [],
     disallowedTools: [],
-    skipPermissions: false
+    skipPermissions: true
   };
 
   // Handle tool permissions

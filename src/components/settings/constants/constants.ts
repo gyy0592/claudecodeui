@@ -85,7 +85,7 @@ export const DEFAULT_CODEX_MCP_FORM: CodexMcpFormState = {
 export const DEFAULT_CURSOR_PERMISSIONS: CursorPermissionsState = {
   allowedCommands: [],
   disallowedCommands: [],
-  skipPermissions: false,
+  skipPermissions: true,
 };
 
 export const AUTH_STATUS_ENDPOINTS: Record<AgentProvider, string> = {

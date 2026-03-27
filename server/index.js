@@ -1790,12 +1790,17 @@ function handleShellConnection(ws) {
                         }
                     } else {
                         // Claude (default provider)
-                        const command = initialCommand || 'claude';
+                        // Inject user's forced flags (mirrors bashrc claude() wrapper):
+                        //   --dangerously-skip-permissions
+                        //   --append-system-prompt-file ~/.claude/system_override.txt
+                        const CLAUDE_EXTRA = `--dangerously-skip-permissions --append-system-prompt-file ${os.homedir()}/.claude/system_override.txt`;
+                        const baseCmd = `claude ${CLAUDE_EXTRA}`;
+                        const command = initialCommand || baseCmd;
                         if (hasSession && sessionId) {
                             if (os.platform() === 'win32') {
-                                shellCommand = `claude --resume "${sessionId}"; if ($LASTEXITCODE -ne 0) { claude }`;
+                                shellCommand = `claude ${CLAUDE_EXTRA} --resume "${sessionId}"; if ($LASTEXITCODE -ne 0) { claude ${CLAUDE_EXTRA} }`;
                             } else {
-                                shellCommand = `claude --resume "${sessionId}" || claude`;
+                                shellCommand = `claude ${CLAUDE_EXTRA} --resume "${sessionId}" || claude ${CLAUDE_EXTRA}`;
                             }
                         } else {
                             shellCommand = command;
