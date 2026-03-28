@@ -93,6 +93,31 @@ Open `http://localhost:3001` — all your existing sessions are discovered autom
 
 Visit the **[documentation →](https://cloudcli.ai/docs)** for more full configuration options, PM2, remote server setup and more
 
+### Development / From source
+
+Clone the repo and use the included `start.sh` script:
+
+```bash
+git clone https://github.com/gyy0592/claudecodeui.git
+cd claudecodeui
+
+# Start in foreground
+bash start.sh
+
+# Start in background (tmux session "claudeui") — recommended for servers
+bash start.sh --detach
+```
+
+`start.sh` handles everything automatically:
+1. Loads `nvm` so `node`/`npm` are available
+2. Kills any existing server instance
+3. Runs `npm install` if `node_modules` is missing
+4. Runs `npm run build` if `dist/` is missing
+5. Starts the server with `CLAUDECODE` unset (required — see warning below)
+
+Access at `http://localhost:3001` (or `http://<your-ip>:3001` for remote).
+View logs: `tmux attach -t claudeui`
+
 ### ⚠️ Starting from inside a Claude Code terminal
 
 If you launch the server from within a Claude Code session (e.g. via `!` commands or a sub-shell), the process inherits `CLAUDECODE=1`. The SDK internally spawns a claude subprocess, and claude refuses to run when it detects this variable (nested-session guard), causing chat to hang silently with no response.
