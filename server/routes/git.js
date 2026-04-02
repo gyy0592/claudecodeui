@@ -979,11 +979,12 @@ Generate the commit message:`;
     console.log('📝 Prompt length:', prompt.length);
 
     // Call the appropriate agent
-    if (provider === 'claude') {
+    if (provider === 'claude' || provider === 'ccr') {
       await queryClaudeSDK(prompt, {
         cwd: projectPath,
         permissionMode: 'bypassPermissions',
-        model: 'sonnet'
+        model: provider === 'ccr' ? 'ridger,gpt-5.3-codex' : 'sonnet',
+        provider,
       }, writer);
     } else if (provider === 'cursor') {
       await spawnCursor(prompt, {

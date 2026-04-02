@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { authenticatedFetch } from '../../../utils/api';
-import { CLAUDE_MODELS, CODEX_MODELS, CURSOR_MODELS, GEMINI_MODELS } from '../../../../shared/modelConstants';
+import { CLAUDE_MODELS, CCR_MODELS, CODEX_MODELS, CURSOR_MODELS, GEMINI_MODELS } from '../../../../shared/modelConstants';
 import type { PendingPermissionRequest, PermissionMode } from '../types/types';
 import type { ProjectSession, SessionProvider } from '../../../types/app';
 
@@ -19,6 +19,9 @@ export function useChatProviderState({ selectedSession }: UseChatProviderStateAr
   });
   const [claudeModel, setClaudeModel] = useState<string>(() => {
     return localStorage.getItem('claude-model') || CLAUDE_MODELS.DEFAULT;
+  });
+  const [ccrModel, setCcrModel] = useState<string>(() => {
+    return localStorage.getItem('ccr-model') || CCR_MODELS.DEFAULT;
   });
   const [codexModel, setCodexModel] = useState<string>(() => {
     return localStorage.getItem('codex-model') || CODEX_MODELS.DEFAULT;
@@ -106,6 +109,8 @@ export function useChatProviderState({ selectedSession }: UseChatProviderStateAr
     setCursorModel,
     claudeModel,
     setClaudeModel,
+    ccrModel,
+    setCcrModel,
     codexModel,
     setCodexModel,
     geminiModel,

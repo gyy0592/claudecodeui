@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import SessionProviderLogo from "../../../llm-logo-provider/SessionProviderLogo";
 import {
   CLAUDE_MODELS,
+  CCR_MODELS,
   CURSOR_MODELS,
   CODEX_MODELS,
   GEMINI_MODELS,
@@ -19,6 +20,8 @@ type ProviderSelectionEmptyStateProps = {
   textareaRef: React.RefObject<HTMLTextAreaElement>;
   claudeModel: string;
   setClaudeModel: (model: string) => void;
+  ccrModel: string;
+  setCcrModel: (model: string) => void;
   cursorModel: string;
   setCursorModel: (model: string) => void;
   codexModel: string;
@@ -50,6 +53,14 @@ const PROVIDERS: ProviderDef[] = [
     check: "bg-primary text-primary-foreground",
   },
   {
+    id: "ccr",
+    name: "CCR",
+    infoKey: "providerSelection.providerInfo.anthropic",
+    accent: "border-amber-500 dark:border-amber-400",
+    ring: "ring-amber-500/15",
+    check: "bg-amber-500 text-white",
+  },
+  {
     id: "cursor",
     name: "Cursor",
     infoKey: "providerSelection.providerInfo.cursorEditor",
@@ -77,6 +88,7 @@ const PROVIDERS: ProviderDef[] = [
 
 function getModelConfig(p: SessionProvider) {
   if (p === "claude") return CLAUDE_MODELS;
+  if (p === "ccr") return CCR_MODELS;
   if (p === "codex") return CODEX_MODELS;
   if (p === "gemini") return GEMINI_MODELS;
   return CURSOR_MODELS;
@@ -85,11 +97,13 @@ function getModelConfig(p: SessionProvider) {
 function getModelValue(
   p: SessionProvider,
   c: string,
+  r: string,
   cu: string,
   co: string,
   g: string,
 ) {
   if (p === "claude") return c;
+  if (p === "ccr") return r;
   if (p === "codex") return co;
   if (p === "gemini") return g;
   return cu;
@@ -103,6 +117,8 @@ export default function ProviderSelectionEmptyState({
   textareaRef,
   claudeModel,
   setClaudeModel,
+  ccrModel,
+  setCcrModel,
   cursorModel,
   setCursorModel,
   codexModel,
@@ -129,6 +145,9 @@ export default function ProviderSelectionEmptyState({
     if (provider === "claude") {
       setClaudeModel(value);
       localStorage.setItem("claude-model", value);
+    } else if (provider === "ccr") {
+      setCcrModel(value);
+      localStorage.setItem("ccr-model", value);
     } else if (provider === "codex") {
       setCodexModel(value);
       localStorage.setItem("codex-model", value);
@@ -145,6 +164,7 @@ export default function ProviderSelectionEmptyState({
   const currentModel = getModelValue(
     provider,
     claudeModel,
+    ccrModel,
     cursorModel,
     codexModel,
     geminiModel,
@@ -166,7 +186,7 @@ export default function ProviderSelectionEmptyState({
           </div>
 
           {/* Provider cards — horizontal row, equal width */}
-          <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-2.5">
+          <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-5 sm:gap-2.5">
             {PROVIDERS.map((p) => {
               const active = provider === p.id;
               return (

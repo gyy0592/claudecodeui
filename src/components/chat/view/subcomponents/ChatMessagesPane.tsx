@@ -21,6 +21,8 @@ interface ChatMessagesPaneProps {
   textareaRef: RefObject<HTMLTextAreaElement>;
   claudeModel: string;
   setClaudeModel: (model: string) => void;
+  ccrModel: string;
+  setCcrModel: (model: string) => void;
   cursorModel: string;
   setCursorModel: (model: string) => void;
   codexModel: string;
@@ -67,6 +69,8 @@ export default function ChatMessagesPane({
   textareaRef,
   claudeModel,
   setClaudeModel,
+  ccrModel,
+  setCcrModel,
   cursorModel,
   setCursorModel,
   codexModel,
@@ -151,6 +155,8 @@ export default function ChatMessagesPane({
           textareaRef={textareaRef}
           claudeModel={claudeModel}
           setClaudeModel={setClaudeModel}
+          ccrModel={ccrModel}
+          setCcrModel={setCcrModel}
           cursorModel={cursorModel}
           setCursorModel={setCursorModel}
           codexModel={codexModel}
@@ -266,4 +272,3 @@ export default function ChatMessagesPane({
     </div>
   );
 }
-

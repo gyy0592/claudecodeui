@@ -74,7 +74,7 @@ export default function ChatInputControls({
         </div>
       </button>
 
-      {provider === 'claude' && (
+      {(provider === 'claude' || provider === 'ccr') && (
         <ThinkingModeSelector selectedMode={thinkingMode} onModeChange={setThinkingMode} onClose={() => {}} className="" />
       )}
 

@@ -3,7 +3,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import os from 'os';
-import { CLAUDE_MODELS, CURSOR_MODELS, CODEX_MODELS } from '../../shared/modelConstants.js';
+import { CLAUDE_MODELS, CCR_MODELS, CURSOR_MODELS, CODEX_MODELS } from '../../shared/modelConstants.js';
 import { parseFrontmatter } from '../utils/frontmatter.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -186,12 +186,17 @@ Custom commands can be created in:
     // Read available models from centralized constants
     const availableModels = {
       claude: CLAUDE_MODELS.OPTIONS.map(o => o.value),
+      ccr: CCR_MODELS.OPTIONS.map(o => o.value),
       cursor: CURSOR_MODELS.OPTIONS.map(o => o.value),
       codex: CODEX_MODELS.OPTIONS.map(o => o.value)
     };
 
     const currentProvider = context?.provider || 'claude';
-    const currentModel = context?.model || CLAUDE_MODELS.DEFAULT;
+    const currentModel =
+      context?.model ||
+      (currentProvider === 'ccr'
+        ? CCR_MODELS.DEFAULT
+        : CLAUDE_MODELS.DEFAULT);
 
     return {
       type: 'builtin',
@@ -216,6 +221,8 @@ Custom commands can be created in:
       context?.model ||
       (provider === 'cursor'
         ? CURSOR_MODELS.DEFAULT
+        : provider === 'ccr'
+          ? CCR_MODELS.DEFAULT
         : provider === 'codex'
           ? CODEX_MODELS.DEFAULT
           : CLAUDE_MODELS.DEFAULT);

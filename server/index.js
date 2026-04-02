@@ -1513,6 +1513,15 @@ function handleChatConnection(ws, request) {
                 console.log('🔄 Session:', data.options?.sessionId ? 'Resume' : 'New');
                 console.log('🤖 Model:', data.options?.model || 'default');
                 await spawnGemini(data.command, data.options, writer);
+            } else if (data.type === 'ccr-command') {
+                console.log('[DEBUG] CCR message:', data.command || '[Continue/Resume]');
+                console.log('📁 Project:', data.options?.projectPath || data.options?.cwd || 'Unknown');
+                console.log('🔄 Session:', data.options?.sessionId ? 'Resume' : 'New');
+                console.log('🤖 Model:', data.options?.model || 'default');
+                await queryClaudeSDK(data.command, {
+                    ...data.options,
+                    provider: 'ccr'
+                }, writer);
             } else if (data.type === 'cursor-resume') {
                 // Backward compatibility: treat as cursor-command with resume and no prompt
                 console.log('[DEBUG] Cursor resume session (compat):', data.sessionId);
@@ -1597,6 +1606,7 @@ function handleChatConnection(ws, request) {
                 // Get all currently active sessions
                 const activeSessions = {
                     claude: getActiveClaudeSDKSessions(),
+                    ccr: getActiveClaudeSDKSessions(),
                     cursor: getActiveCursorSessions(),
                     codex: getActiveCodexSessions(),
                     gemini: getActiveGeminiSessions()
@@ -1785,6 +1795,17 @@ function handleShellConnection(ws) {
 
                         if (hasSession && resumeId) {
                             shellCommand = `${command} --resume "${resumeId}"`;
+                        } else {
+                            shellCommand = command;
+                        }
+                    } else if (provider === 'ccr') {
+                        const command = initialCommand || 'ccr code';
+                        if (hasSession && sessionId) {
+                            if (os.platform() === 'win32') {
+                                shellCommand = `ccr code --resume "${sessionId}"; if ($LASTEXITCODE -ne 0) { ccr code }`;
+                            } else {
+                                shellCommand = `ccr code --resume "${sessionId}" || ccr code`;
+                            }
                         } else {
                             shellCommand = command;
                         }

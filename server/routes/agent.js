@@ -11,7 +11,7 @@ import { spawnCursor } from '../cursor-cli.js';
 import { queryCodex } from '../openai-codex.js';
 import { spawnGemini } from '../gemini-cli.js';
 import { Octokit } from '@octokit/rest';
-import { CLAUDE_MODELS, CURSOR_MODELS, CODEX_MODELS } from '../../shared/modelConstants.js';
+import { CLAUDE_MODELS, CCR_MODELS, CURSOR_MODELS, CODEX_MODELS } from '../../shared/modelConstants.js';
 import { IS_PLATFORM } from '../constants/config.js';
 
 const router = express.Router();
@@ -952,6 +952,17 @@ router.post('/', validateExternalApiKey, async (req, res) => {
         sessionId: null, // New session
         model: model,
         permissionMode: 'bypassPermissions' // Bypass all permissions for API calls
+      }, writer);
+    } else if (provider === 'ccr') {
+      console.log('🧭 Starting CCR Claude session');
+
+      await queryClaudeSDK(message.trim(), {
+        projectPath: finalProjectPath,
+        cwd: finalProjectPath,
+        sessionId: null,
+        model: model || CCR_MODELS.DEFAULT,
+        permissionMode: 'bypassPermissions',
+        provider: 'ccr'
       }, writer);
 
     } else if (provider === 'cursor') {

@@ -13,6 +13,10 @@ export default function SessionProviderLogo({
   provider = 'claude',
   className = 'w-5 h-5',
 }: SessionProviderLogoProps) {
+  if (provider === 'ccr') {
+    return <ClaudeLogo className={className} />;
+  }
+
   if (provider === 'cursor') {
     return <CursorLogo className={className} />;
   }

@@ -24,6 +24,26 @@ export const CLAUDE_MODELS = {
 };
 
 /**
+ * Claude Code Router Models
+ */
+export const CCR_MODELS = {
+  OPTIONS: [
+    { value: "ridger,gpt-5.3-codex", label: "Ridger GPT-5.3 Codex" },
+    { value: "ridger,gpt-5.4", label: "Ridger GPT-5.4" },
+    { value: "taobao,gpt-5.3-codex", label: "Taobao GPT-5.3 Codex" },
+    { value: "taobao,gpt-5.4", label: "Taobao GPT-5.4" },
+    { value: "webai,flash", label: "WebAI Flash" },
+    { value: "webai,thinking", label: "WebAI Thinking" },
+    { value: "webai,pro", label: "WebAI Pro" },
+    { value: "webai-gpu,gpu-flash", label: "WebAI GPU Flash" },
+    { value: "webai-gpu,gpu-thinking", label: "WebAI GPU Thinking" },
+    { value: "webai-gpu,gpu-pro", label: "WebAI GPU Pro" },
+  ],
+
+  DEFAULT: "ridger,gpt-5.3-codex",
+};
+
+/**
  * Cursor Models
  */
 export const CURSOR_MODELS = {
@@ -66,7 +86,7 @@ export const CODEX_MODELS = {
     { value: "o4-mini", label: "O4-mini" },
   ],
 
-  DEFAULT: "gpt-5.4",
+  DEFAULT: "gpt-5.3-codex",
 };
 
 /**

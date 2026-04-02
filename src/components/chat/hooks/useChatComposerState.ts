@@ -38,6 +38,7 @@ interface UseChatComposerStateArgs {
   cyclePermissionMode: () => void;
   cursorModel: string;
   claudeModel: string;
+  ccrModel: string;
   codexModel: string;
   geminiModel: string;
   isLoading: boolean;
@@ -110,6 +111,7 @@ export function useChatComposerState({
   cyclePermissionMode,
   cursorModel,
   claudeModel,
+  ccrModel,
   codexModel,
   geminiModel,
   isLoading,
@@ -281,7 +283,16 @@ export function useChatComposerState({
           projectName: selectedProject.name,
           sessionId: currentSessionId,
           provider,
-          model: provider === 'cursor' ? cursorModel : provider === 'codex' ? codexModel : provider === 'gemini' ? geminiModel : claudeModel,
+          model:
+            provider === 'cursor'
+              ? cursorModel
+              : provider === 'codex'
+                ? codexModel
+                : provider === 'gemini'
+                  ? geminiModel
+                  : provider === 'ccr'
+                    ? ccrModel
+                    : claudeModel,
           tokenUsage: tokenBudget,
         };
 
@@ -329,6 +340,7 @@ export function useChatComposerState({
     },
     [
       claudeModel,
+      ccrModel,
       codexModel,
       currentSessionId,
       cursorModel,
@@ -571,6 +583,8 @@ export function useChatComposerState({
                 ? 'codex-settings'
                 : provider === 'gemini'
                   ? 'gemini-settings'
+                  : provider === 'ccr'
+                    ? 'claude-settings'
                   : 'claude-settings';
           const savedSettings = safeLocalStorage.getItem(settingsKey);
           if (savedSettings) {
@@ -638,6 +652,22 @@ export function useChatComposerState({
             toolsSettings,
           },
         });
+      } else if (provider === 'ccr') {
+        sendMessage({
+          type: 'ccr-command',
+          command: messageContent,
+          options: {
+            projectPath: resolvedProjectPath,
+            cwd: resolvedProjectPath,
+            sessionId: effectiveSessionId,
+            resume: Boolean(effectiveSessionId),
+            toolsSettings,
+            permissionMode,
+            model: ccrModel,
+            sessionSummary,
+            images: uploadedImages,
+          },
+        });
       } else {
         sendMessage({
           type: 'claude-command',
@@ -675,6 +705,7 @@ export function useChatComposerState({
       selectedSession,
       attachedImages,
       claudeModel,
+      ccrModel,
       codexModel,
       currentSessionId,
       cursorModel,
@@ -904,7 +935,7 @@ export function useChatComposerState({
 
   const handleGrantToolPermission = useCallback(
     (suggestion: { entry: string; toolName: string }) => {
-      if (!suggestion || provider !== 'claude') {
+      if (!suggestion || (provider !== 'claude' && provider !== 'ccr')) {
         return { success: false };
       }
       return grantClaudeToolPermission(suggestion.entry);

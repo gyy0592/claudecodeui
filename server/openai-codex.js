@@ -211,8 +211,12 @@ export async function queryCodex(command, options = {}, ws) {
   const abortController = new AbortController();
 
   try {
-    // Initialize Codex SDK
-    codex = new Codex();
+    // Initialize Codex SDK with the current server environment so
+    // OPENAI_BASE_URL / OPENAI_API_KEY from the UI service are always
+    // propagated to the spawned codex CLI.
+    codex = new Codex({
+      env: process.env
+    });
 
     // Thread options with sandbox and approval settings
     const threadOptions = {
