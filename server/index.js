@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+// Prevent SDK from refusing to start inside a Claude Code terminal session
+delete process.env.CLAUDECODE;
+
 // Load environment variables before other imports execute
 import './load-env.js';
 import fs from 'fs';
